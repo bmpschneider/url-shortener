@@ -8,11 +8,11 @@ routes.get('/', (req, res) => {
     return res.json({ hello: 'world' })
 })
 
-routes.get('/urls/:id', UrlController.redirect);
+routes.get('/urls/:id', UrlController.urlRedirect);
 
 routes.post('/users/:user_id/urls', UrlController.urlInsert);
 
-// routes.get('/stats', UrlController.returnStats)
+routes.get('/stats', UrlController.returnStats)
 
 routes.get('/users/:user_id/stats', UrlController.returnUrlByUser);
 
@@ -23,8 +23,5 @@ routes.delete('/urls/:id', UrlController.urlDelete);
 routes.post('/users', UserController.userInsert);
 
 routes.delete('/user/:user_id', UserController.userDelete);
-
-routes.post('/urlss/:id', UrlController.urlUpdate);
-
 
 module.exports = routes;

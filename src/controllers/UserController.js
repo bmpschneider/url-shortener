@@ -11,22 +11,24 @@ module.exports = {
         });
         if (!userfind) {
             const user = await User.create({ name });
-            return res.json(user);
+
+            return res.status(201).json({ id: name });
         }
         return res.status(409).json({ error: 'User already exist!' })
     },
+
 
     async userDelete(req, res) {
         const { user_id } = req.params;
 
         const userdelete = await User.destroy({
             where: {
-                id: user_id
+                name: user_id
             }
         });
         if (!userdelete) {
             return res.status(400).json({ error: 'User not found' })
         }
-        return res.status(200).json(User.id);
+        return res.json(User.id);
     }
 };

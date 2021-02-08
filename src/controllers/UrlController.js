@@ -1,9 +1,10 @@
 const User = require('../models/User');
 const Url = require('../models/Url');
+const sequelize = require('sequelize')
 
 module.exports = {
 
-    async redirect(req, res) {
+    async urlRedirect(req, res) {
         const { id } = req.params;
         const url = await Url.findByPk(id);
 
@@ -11,69 +12,37 @@ module.exports = {
             return res.status(404).json({ error: '404 not found' });
         }
 
-        res.redirect(301, `${url.url}`);
+        await Url.update({ hits: url.hits + 1 }, {
+            where: {
+                id: url.id
+            }
+        })
+
+        return res.redirect(301, url.url);
     },
     async urlInsert(req, res) {
         const { user_id } = req.params;
         const { url } = req.body;
 
-        const user = await User.findByPk(user_id);
+        const user = await User.findOne({
+            where: {
+                name: user_id
+            }
+        });
 
         if (!user) {
             return res.status(400).json({ error: 'User not found' });
         }
 
-        const teste = await Url.create({
-            hits: 1,
+        const urlData = await Url.create({
+            hits: 0,
             url: url,
             short_url: url,
-            user_id: user_id,
+            user_id: user.id,
         });
-
-        return res.status(201).json(teste);
+        return res.status(201).json(urlData);
     },
 
-    // async urlInsert(req, res) {
-    //     const { user_id } = req.params;
-    //     const { url } = req.body;
-
-    //     const user = await User.findByPk(user_id);
-
-    //     if (!user) {
-    //         return res.status(400).json({ error: 'User not found' });
-    //     }
-
-    //     const findurl = await Url.findOne({
-    //         where: {
-    //             url: url
-    //         }
-    //     });
-    //     const newHits = findurl.hits + 1;
-
-    //     if (!findurl) {
-    //         const teste = await Url.create({
-    //             hits: 1,
-    //             url: url,
-    //             short_url: url,
-    //             user_id: user_id,
-    //         });
-    //         return res.status(201).json(teste);
-    //     }
-    //     if (findurl) {
-    //         await Url.update({ hits: newHits }, {
-    //             where: {
-    //                 url: url
-    //             }
-    //         });
-    //         urlStats = {
-    //             id: findurl.id,
-    //             hits: newHits,
-    //             url: findurl.url,
-    //             short_url: findurl.short_url
-    //         }
-    //         return res.status(201).json(urlStats);
-    //     }
-    // },
 
 
     async urlUpdate(req, res) {
@@ -89,23 +58,46 @@ module.exports = {
 
     async returnUrlByUser(req, res) {
         const { user_id } = req.params;
-        const { name, urls } = req.body;
-        const user = await User.findByPk(user_id, {
-            include: { association: 'urls' }
+        const user = await User.findOne({
+            where: {
+                name: user_id
+            },
         });
 
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
+        const urlStats = await Url.findOne({
+            attributes: [
+                [sequelize.fn('sum', sequelize.col('hits')), 'total_hits'],
+                [sequelize.fn('count', sequelize.col('id')), 'total_urls'],
+            ],
+            where: {
+                user_id: user.id
+            }
+        })
+
+        const urls = await Url.findAll({
+            attributes: [
+                "id",
+                "hits",
+                "url",
+                ["short_url", "shortUrl"]
+            ],
+            where: {
+                user_id: user.id
+            },
+            order: [
+                ['hits', 'DESC']
+            ],
+            limit: 10
+        })
+
 
         const formattedData = {
-            id: user_id,
-            name: user.name,
-            urls: user.urls
+            hits: parseInt(urlStats.dataValues.total_hits),
+            urlCount: urlStats.dataValues.total_urls,
+            topUrls: urls
         }
 
-        return res.json(formattedData);
-
+        return res.json(formattedData)
     },
 
     async returnUrl(req, res) {
@@ -119,7 +111,6 @@ module.exports = {
             short_url: url.short_url
         }
         return res.json(formattedData);
-
     },
 
     async urlDelete(req, res) {
@@ -135,4 +126,36 @@ module.exports = {
         }
         return res.status(200).json(Url.id);
     },
+
+    async returnStats(req, res) {
+
+        const urlStats = await Url.findOne({
+            attributes: [
+                [sequelize.fn('sum', sequelize.col('hits')), 'total_hits'],
+                [sequelize.fn('count', sequelize.col('id')), 'total_urls'],
+            ],
+        })
+
+        const urls = await Url.findAll({
+            attributes: [
+                "id",
+                "hits",
+                "url",
+                ["short_url", "shortUrl"]
+            ],
+            order: [
+                ['hits', 'DESC']
+            ],
+            limit: 10
+        })
+
+
+        const formattedData = {
+            hits: parseInt(urlStats.dataValues.total_hits),
+            urlCount: urlStats.dataValues.total_urls,
+            topUrls: urls
+        }
+
+        return res.json(formattedData)
+    }
 }
