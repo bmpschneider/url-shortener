@@ -16,7 +16,7 @@ smaller than the original.</p>
    * [Technologies](#technologies)
 <!--te-->
 
-### About 💡
+### About
 
 A URL shortener is a service that receives any URL and returns another URL, usually
 smaller than the original.
@@ -39,7 +39,7 @@ coming soon
 
 
 
-### Technologies 🛠
+### Technologies
 
 The following tools were used in the construction of the project:
 
