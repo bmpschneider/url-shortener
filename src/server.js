@@ -1,11 +1,11 @@
 const express = require('express')
 const routes = require('./routes')
 
-require('./database');
+require('./database')
 
-const app = express();
+const app = express()
 
-app.use(express.json());
+app.use(express.json())
 
 app.use(routes)
-app.listen(5005);
+app.listen(process.env.PORT || 5000)

@@ -7,12 +7,9 @@ smaller than the original.</p>
 <!--ts-->
    * [About](#about)
    * [Endpoints](#endpoints)
+   * [Requirements](#requirements)
    * [Installation](#installation)
    * [How to use](#how-to-use)
-      * [Local files](#local-files)
-      * [Remote files](#remote-files)
-      * [Multiple files](#multiple-files)
-   * [Tests](#testes)
    * [Technologies](#technologies)
 <!--te-->
 
@@ -32,11 +29,43 @@ smaller than the original.
 - POST /users
 - DELETE /user/:userId
 
+
+### Requirements
+
+- [Node.js](https://nodejs.org/en/)
+
+
 ### Installation
 
+1. Clone project
+`` `
+$ git clone https://github.com/bmpschneider/url-shortener.git
+`` `
+
+2. Enter the project folder
+`` `
+$ cd url-shortener
+`` `
+
+3. Install the dependencies
+`` `
+$ npm install
+`` `
+
+4. Perform Migrations
+`` `
+$ npx sequelize-cli db:migrate
+`` `
+
+5. Start aplication
+`` `
+$ npm start
+`` `
+
+
+### How to use
 
 coming soon
-
 
 
 ### Technologies

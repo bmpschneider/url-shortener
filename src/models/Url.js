@@ -1,7 +1,8 @@
-const { Model, DataTypes } = require('sequelize');
+const { Model, DataTypes } = require('sequelize')
 
 class Url extends Model {
     static init(sequelize) {
+
         super.init({
             hits: DataTypes.INTEGER,
             url: DataTypes.STRING,
@@ -13,8 +14,8 @@ class Url extends Model {
     }
 
     static associate(models) {
-        this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+        this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' })
     }
 }
 
-module.exports = Url;
+module.exports = Url
