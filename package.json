@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.js",
     "start": "nodemon src/server.js"
   },
-  "author": "bruno schneider",
+  "author": "Bruno Schneider",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
