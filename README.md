@@ -1,9 +1,5 @@
 <h1 align="center">URL Shortener Service</h1>
 
-<p align="center">
-A URL shortener is a service that receives any URL and returns another URL, usually
-smaller than the original.</p>
-
 <!--ts-->
    * [About](#about)
    * [Endpoints](#endpoints)
